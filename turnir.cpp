@@ -125,6 +125,7 @@ int main() {
     int brojacProtivnika;
 
     for (brojacIgraca = 0; brojacIgraca < brojIgrca; brojacIgraca++) {
+        int fitnes = 0;
         for (brojacProtivnika = 0; brojacProtivnika < brojProtivnika; brojacProtivnika++) {
             fs << "Pocinje meci izmedju igraca: " << brojacIgraca << " i protivnika: " << brojacProtivnika << std::endl;
 
@@ -222,12 +223,14 @@ int main() {
                 if(pobeda == 1) {
                     //pobedio je igrac
                     fs << "Pobedio je protivnik. Score: -7"  << std::endl;
+                    fitnes -= 7;
                     fs.flush();
                     break;
                 }
                 if(pobeda == -1) {
                     //pobedio je protivnik
                     fs << "Pobedio je igrac. Score: +7" << std::endl;
+                    fitnes += 7;
                     fs.flush();
                     break;
                 }
@@ -246,11 +249,13 @@ int main() {
                 }
                 else if (brojPoteza > 85 && (rezultat[2] > rezultat[3])) {
                     fs << "Sudijskom odlukom pobedio je protivnik. Score: -2" << std::endl;
+                    fitnes -= 2;
                     fs.flush();
                     break;
                 }
                 else if (brojPoteza > 85 && (rezultat[2] < rezultat[3])) {
                     fs << "Sudijskom odlukom pobedio je igrac. Score: +2" << std::endl;
+                    fitnes += 2;
                     fs.flush();
                     break;
                 }
@@ -328,12 +333,14 @@ int main() {
                 if(pobeda == 1) {
                     //pobedio je igrac
                     fs << "Pobedio je igrac. Score: +7"  << std::endl;
+                    fitnes += 7;
                     fs.flush();
                     break;
                 }
                 if(pobeda == -1) {
                     //pobedio je protivnik
                     fs << "Pobedio je protivnik. Score: -7" << std::endl;
+                    fitnes -= 7;
                     fs.flush();
                     break;
                 }
@@ -352,11 +359,13 @@ int main() {
                 }
                 else if (brojPoteza > 85 && (rezultat[2] < rezultat[3])) {
                     fs << "Sudijskom odlukom pobedio je protivnik. Score: -2" << std::endl;
+                    fitnes -= 2;
                     fs.flush();
                     break;
                 }
                 else if (brojPoteza > 85 && (rezultat[2] > rezultat[3])) {
                     fs << "Sudijskom odlukom pobedio je igrac. Score: +2" << std::endl;
+                    fitnes += 2;
                     fs.flush();
                     break;
                 }
@@ -365,6 +374,8 @@ int main() {
 
             }
         }
+        fs << "Igrac " << brojacIgraca << " ima fitness: " <<  fitnes << std::endl;
+        fs.flush();
     }
     fs.flush();
     fs.close();
