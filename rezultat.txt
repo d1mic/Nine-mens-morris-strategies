@@ -1,0 +1,20 @@
+Pocinje meci izmedju igraca: 0 i protivnika: 0
+Sudijskom odlukom pobedio je protivnik. Score: -2
+Pocinje meci izmedju igraca: 0 i protivnika: 1
+Sudijskom odlukom pobedio je protivnik. Score: -2
+Pocinje meci izmedju igraca: 1 i protivnika: 0
+Sudijskom odlukom pobedio je protivnik. Score: -2
+Pocinje meci izmedju igraca: 1 i protivnika: 1
+Nereseno. Score: +0
+Pocinje meci izmedju igraca: 2 i protivnika: 0
+Pobedio je igrac. Score: +7
+Pocinje meci izmedju igraca: 2 i protivnika: 1
+Sudijskom odlukom pobedio je protivnik. Score: -2
+Pocinje meci izmedju igraca: 3 i protivnika: 0
+Pobedio je igrac. Score: +7
+Pocinje meci izmedju igraca: 3 i protivnika: 1
+Pobedio je igrac. Score: +7
+Pocinje meci izmedju igraca: 4 i protivnika: 0
+Sudijskom odlukom pobedio je protivnik. Score: -2
+Pocinje meci izmedju igraca: 4 i protivnika: 1
+Sudijskom odlukom pobedio je protivnik. Score: -2
