@@ -1,6 +1,8 @@
 import random
 import logging
 import os
+import sys
+import re
 import time
 
 
@@ -158,6 +160,27 @@ def initial_population(population_size=100):
     """
     logging.info('Generating random population with size: %d', population_size)
     return [generate_random_unit() for i in range(population_size)]
+
+
+def initial_population_from_backup(filename="backup.txt"):
+    """
+    Takes initial population from backup file
+
+    :param filename: backup file
+    :return: population from backup file
+    """
+    try:
+        f = open(filename, "r")
+        lines = f.readlines()
+        num_units = int(re.search(r'\d+', lines[0]).group())
+        population = []
+        for i in range(1, num_units + 1):
+            array = [int(number) for number in lines[i].split(' ')]
+            population.append((array, -100))
+        return population
+
+    except IOError:
+        print("IO error - backup error ")
 
 
 def unit_to_str(unit):
@@ -377,16 +400,21 @@ def main():
                         format='%(levelname)s: %(asctime)s -- %(message)s',
                         level=logging.INFO, datefmt='%d/%m %I:%M %p')
 
-    num_of_iterations = 4
+    num_of_iterations = 2
     enemies = init_enemies()
-    population = initial_population()
+
+    if len(sys.argv) > 1 and sys.argv[1] == "-b":
+        population = initial_population_from_backup()
+    else:
+        population = initial_population()
+
     pop = calculate_population_fitness(population, enemies)
     iteration = 0
     log_population(pop, iteration)
 
     while iteration < num_of_iterations:
         selected = selection(pop)
-        for i in range(len(selected) / 2):
+        for i in range(int(len(selected) / 2)):
             unit1 = random.choice(selected)
             selected.remove(unit1)
             unit2 = random.choice(selected)
@@ -416,6 +444,7 @@ def main():
         new_generation = calculate_population_fitness(new_generation, enemies)
         pop = new_generation + old_generation
         pop = elite_selection(sort_population(pop), 100)
+        tournament_setup(pop, enemies, "backup.txt")
         iteration += 1
         log_population(pop, iteration)
 
