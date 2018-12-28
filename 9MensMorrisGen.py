@@ -177,6 +177,7 @@ def initial_population_from_backup(filename="backup.txt"):
         for i in range(1, num_units + 1):
             array = [int(number) for number in lines[i].split(' ')]
             population.append((array, -100))
+        logging.info('Using population from backup')
         return population
 
     except IOError:
