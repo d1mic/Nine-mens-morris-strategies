@@ -1,14 +1,13 @@
-import numpy
 import random
 import logging
-import numpy as np
-import math
 import os
 import time
 
 
-def generateRandomUnit():
-    logging.debug('Generating random unit')
+def generate_random_unit():
+    """
+    Generates one unit
+    """
     return ([random.randint(9, 25),
              random.randint(5, 25),
              random.randint(1, 5),
@@ -30,53 +29,63 @@ def generateRandomUnit():
              random.randint(5000, 10000)], -100)
 
 
-def fitness(unit):
-    return sum(unit)
-
-
 def check_range(index, value):
+    """
+    Checks if the selected gene of the unit are is in the right range
+    :param index: Index of the gene (int) in one unit
+    :param value: Value of the gene (int) in one unit
+
+    :return: true/false - if the selected gene is in the right range
+    """
 
     if index == 0:
-        return (9 <= value <= 25)
+        return 9 <= value <= 25
     elif index == 1:
-        return (5 <= value <= 25)
+        return 5 <= value <= 25
     elif index == 2:
-        return (1 <= value <= 5)
+        return 1 <= value <= 5
     elif index == 3:
-        return (5 <= value <= 35)
+        return 5 <= value <= 35
     elif index == 4:
-        return (5 <= value <= 30)
+        return 5 <= value <= 30
     elif index == 5:
-        return (5 <= value <= 25)
+        return 5 <= value <= 25
     elif index == 6:
-        return (1 <= value <= 6)
+        return 1 <= value <= 6
     elif index == 7:
-        return (15 <= value <= 40)
+        return 15 <= value <= 40
     elif index == 8:
-        return (10 <= value <= 30)
+        return 10 <= value <= 30
     elif index == 9:
-        return (7 <= value <= 20)
+        return 7 <= value <= 20
     elif index == 10:
-        return (10 <= value <= 35)
+        return 10 <= value <= 35
     elif index == 11:
-        return (5 <= value <= 30)
+        return 5 <= value <= 30
     elif index == 12:
-        return (20 <= value <= 55)
+        return 20 <= value <= 55
     elif index == 13:
-        return (1 <= value <= 3)
+        return 1 <= value <= 3
     elif index == 14:
-        return (5000 <= value <= 10000)
+        return 5000 <= value <= 10000
     elif index == 15:
-        return (5 <= value <= 25)
+        return 5 <= value <= 25
     elif index == 16:
-        return (5 <= value <= 30)
+        return 5 <= value <= 30
     elif index == 17:
-        return (15 <= value <= 45)
+        return 15 <= value <= 45
     elif index == 18:
-        return (5000 <= value <= 10000)
+        return 5000 <= value <= 10000
 
 
 def normalize_population(population):
+    """
+    Normalizes population
+    :param population: Population to be normalized
+
+    :return: normalized population 
+
+    """
     new_pop = []
 
     for i in range(len(population)):
@@ -96,37 +105,69 @@ def normalize_population(population):
     return normalized_array
 
 
-def wheelOneSelect(normalized_population):
+def wheel_one_select(normalized_population):
+    """
+    Takes the normalized population and uses wheel selection to select one unit
+
+    :param normalized_population: already normalized population
+    :return: index of the unit of population to be selected
+    """
     previous = 0
     roulette_pick = random.random()
     for i in range(len(normalized_population)):
-        if roulette_pick > previous and roulette_pick < normalized_population[i]:
+        if previous < roulette_pick < normalized_population[i]:
             break
         previous = normalized_population[i]
     return i
 
 
-def wheelSelection(population, selection_num=40):
+def wheel_selection(population, selection_num=40):
+    """
+    Uses wheel selection to pick selection_num units from population
+
+    :param population: population to be picked from
+    :param selection_num: number of units to be selected
+    :return: array of selected units
+    """
     selected = []
     normalized = normalize_population(population)
     for i in range(selection_num):
-        k = wheelOneSelect(normalized)
+        k = wheel_one_select(normalized)
         normalized.pop(k)
-        selectedUnit = population.pop(k)
-        selected.append(selectedUnit)
+        selected_unit = population.pop(k)
+        selected.append(selected_unit)
     return selected
 
 
-def eliteSelection(population, elite_num):
+def elite_selection(population, elite_num):
+    """
+    Uses elite selection to pick elite_num units from population
+
+    :param population: population to be picked from
+    :param elite_num: number of units to be selected
+    :return: array of selected units
+    """
     return population[:elite_num]
 
 
-def initialPopulation(population_size=100):
+def initial_population(population_size=100):
+    """
+    Generates unit population of population_size units
+
+    :param population_size: number of units
+    :return: population of random units
+    """
     logging.info('Generating random population with size: %d', population_size)
-    return [generateRandomUnit() for i in range(population_size)]
+    return [generate_random_unit() for i in range(population_size)]
 
 
 def unit_to_str(unit):
+    """
+    Converts unit into string that is in format to be passed to fitness function
+
+    :param unit: unit
+    :return: string representation of unit
+    """
     unit_data = unit[0]
     unit_string = str(unit_data[0])
     for i in range(1, len(unit_data)):
@@ -134,7 +175,14 @@ def unit_to_str(unit):
     return unit_string
 
 
-def calculateFitnessForPopulation(population, enemies):
+def calculate_population_fitness(population, enemies):
+    """
+    Calculates the fitness of all units in the population and adds that fitness to the units
+
+    :param population: population without fitness values (-100 - default value)
+    :param enemies: enemies for units to play 9 men morris with
+    :return: population with units that have fitness values
+    """
     try:
         f = open("unos.txt", "w")
         f.write(str(len(population)) + " " + str(len(enemies)) + "\n")
@@ -163,18 +211,37 @@ def calculateFitnessForPopulation(population, enemies):
     pop_with_fitness = []
     for i in range(len(population)):
         pop_with_fitness.append((population[i][0], results[i]))
-    return sortPopulation(pop_with_fitness)
+    return sort_population(pop_with_fitness)
 
 
-def sortPopulation(population):
+def sort_population(population):
+    """
+    Sorts the population based on fitness values
+
+    :param population: population to be sorted
+    :return: sorted population
+    """
     return sorted(population, key=lambda tup: float(tup[1]), reverse=True)
 
 
 def selection(population, elite=10, wheel=40):
-    return eliteSelection(population, elite) + wheelSelection(population[elite + 1:], wheel)
+    """
+    Selects units from initial population
+    :param population: initial population
+    :param elite: number of elements to be selected using elite selection
+    :param wheel: number of elements to be selected using wheel selection
+    :return: array of selected elements
+    """
+    return elite_selection(population, elite) + wheel_selection(population[elite + 1:], wheel)
 
 
-def fourPointCrossover(first_parent, second_parent):
+def four_point_crossover(first_parent, second_parent):
+    """
+    Makes 2 child units using 4 point crossover method
+    :param first_parent: parent to be crossed over
+    :param second_parent: parent to be crossed over
+    :return: 2 child units
+    """
     points = sorted(random.sample(range(0, len(first_parent[0])), 4))
     first_parent = first_parent[0]
     second_parent = second_parent[0]
@@ -189,18 +256,23 @@ def fourPointCrossover(first_parent, second_parent):
 
 
 def mutation(unit):
+    """
+    Uses mutation to change some of the genes. Each gene has 8% chance to be mutated.
+    :param unit: unit to be mutated
+    :return: unit
+    """
     unit_data = unit[0]
     for i in range(len(unit_data)):
         mutation_param = random.random()
         if mutation_param <= 0.08:
             addition_param = random.random()
             if addition_param < 0.5:
-                if(check_range(i, unit_data[i]+1)):
+                if check_range(i, unit_data[i]+1):
                     unit_data[i] += 1
                 else:
                     unit_data[i] -= 1
             else:
-                if(check_range(i, unit_data[i]-1)):
+                if check_range(i, unit_data[i]-1):
                     unit_data[i] -= 1
                 else:
                     unit_data[i] += 1
@@ -208,30 +280,37 @@ def mutation(unit):
     return (unit_data, -100)
 
 
-def remove_duplicates(pop):
+def remove_duplicates(population):
+    """
+    If the population has duplicate units removes them
+    :param population: population
+    :return: population without duplicate units
+    """
     result = []
-    for (unit, fitness) in pop:
+    for (unit, fitness) in population:
         if unit in result:
-            pop.remove((unit, fitness))
+            population.remove((unit, fitness))
         else:
             result.append(unit)
-    return pop
+    return population
 
 
 def main():
     enemies = [([19, 16, 3, 27, 7, 8, 4, 23, 27, 19, 17, 24, 29, 2, 9208, 18, 15, 36, 9975], -100),
-        ([19, 16, 4, 24, 7, 9, 6, 21, 27, 12, 34, 8, 54, 1, 7215, 21, 6, 33, 8788], -100),
-        ([23, 15, 4, 28, 13, 10, 1, 18, 26, 8, 10, 27, 21, 1, 6662, 16, 5, 40, 5876], -100),
-        ([15, 17, 2, 9, 27, 18, 6, 33, 11, 20, 25, 14, 48, 2, 5484, 10, 24, 20, 9864], -100)]
+               ([19, 16, 4, 24, 7, 9, 6, 21, 27, 12, 34,
+                 8, 54, 1, 7215, 21, 6, 33, 8788], -100),
+               ([23, 15, 4, 28, 13, 10, 1, 18, 26, 8, 10,
+                 27, 21, 1, 6662, 16, 5, 40, 5876], -100),
+               ([15, 17, 2, 9, 27, 18, 6, 33, 11, 20, 25, 14, 48, 2, 5484, 10, 24, 20, 9864], -100)]
     logging.basicConfig(filename='information.log',
                         format='%(levelname)s: %(asctime)s -- %(message)s',
                         level=logging.INFO, datefmt='%d/%m %I:%M %p')
 
-    population = initialPopulation()
-    pop = calculateFitnessForPopulation(population, enemies)
+    population = initial_population()
+    pop = calculate_population_fitness(population, enemies)
     iteration = 0
-    for el in sortPopulation(pop):
-        logging.info(str(el[1]) + " "+ str(el[0]))
+    for el in sort_population(pop):
+        logging.info(str(el[1]) + " " + str(el[0]))
 
     while iteration < 4:
         selected = selection(pop)
@@ -241,7 +320,7 @@ def main():
             unit2 = random.choice(selected)
             selected.remove(unit2)
 
-            child1, child2 = fourPointCrossover(unit1, unit2)
+            child1, child2 = four_point_crossover(unit1, unit2)
             child1 = mutation(child1)
             child2 = mutation(child2)
 
@@ -251,7 +330,7 @@ def main():
         pop = remove_duplicates(pop)
         missing_values = 150 - len(pop)
         for i in range(missing_values):
-            pop.append(generateRandomUnit())
+            pop.append(generate_random_unit())
 
         new_generation = []
         old_generation = []
@@ -261,14 +340,14 @@ def main():
             else:
                 old_generation.append(el)
 
-        new_generation = calculateFitnessForPopulation(new_generation, enemies)
+        new_generation = calculate_population_fitness(new_generation, enemies)
         pop = new_generation + old_generation
-        pop = eliteSelection(sortPopulation(pop), 100)
+        pop = elite_selection(sort_population(pop), 100)
         iteration += 1
 
         logging.info("------------------------------------------------")
-        for el in sortPopulation(pop):
-            logging.info(str(el[1]) + " "+ str(el[0]))
+        for el in sort_population(pop):
+            logging.info(str(el[1]) + " " + str(el[0]))
 
     return 0
 
