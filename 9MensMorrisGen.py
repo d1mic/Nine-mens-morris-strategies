@@ -403,10 +403,10 @@ def main():
     num_of_iterations = 2
     enemies = init_enemies()
 
-    if len(sys.argv) > 1 and sys.argv[1] == "-b":
-        population = initial_population_from_backup()
-    else:
+    if len(sys.argv) > 1 and sys.argv[1] == "-n":
         population = initial_population()
+    else:
+        population = initial_population_from_backup()
 
     pop = calculate_population_fitness(population, enemies)
     iteration = 0
