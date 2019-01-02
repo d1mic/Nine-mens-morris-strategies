@@ -232,7 +232,8 @@ def tournament_results(filename="rezultat.txt"):
         results = []
         for line in lines:
             if line.__contains__("fitness"):
-                results.append(int(line[-3:]))
+                numbers = re.findall(r'-?\d+$', line)
+                results.append(int(numbers[0]))
         return results
 
     except IOError:
@@ -351,7 +352,7 @@ def remove_duplicates(population):
             result.append(unit)
     return population
 
-
+# EDIT THIS FUNCTION TO ADD MORE ENEMIES
 def init_enemies():
     """
     Initialize enemies for fitness function
@@ -404,11 +405,18 @@ def main():
     num_of_iterations = 2
     enemies = init_enemies()
 
-    if len(sys.argv) > 1 and sys.argv[1] == "-n":
+    if len(sys.argv) == 3 and sys.argv[2] == "-n":
         population = initial_population()
-    else:
+        num_of_iterations = int(sys.argv[1])
+    elif len(sys.argv) == 2:
         population = initial_population_from_backup()
+        num_of_iterations = int(sys.argv[1])
+    else:
+        print("Usage: python 9MensMorrisGen.py num_of_iterations [-n]")
+        exit()
 
+
+    print("Starting training with " + str(num_of_iterations) + " generations")
     pop = calculate_population_fitness(population, enemies)
     iteration = 0
     log_population(pop, iteration)
@@ -450,6 +458,7 @@ def main():
         log_population(pop, iteration)
 
     logging.info("THE END")
+    print("Successfuly ended training")
 
     return 0
 
